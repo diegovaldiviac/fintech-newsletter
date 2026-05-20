@@ -1,0 +1,21 @@
+# Data sources — API
+requests==2.31.0
+praw==7.7.1
+
+# Data sources — Scraping (HTML estático)
+beautifulsoup4==4.12.3   # Parseo de HTML
+lxml==5.2.1              # Parser más rápido que html.parser, requerido por bs4
+feedparser==6.0.11       # Parseo de RSS/Atom feeds (alternativa limpia a scraping directo)
+
+# LLM
+anthropic==0.25.0
+
+# Email
+resend==0.7.2
+
+# Scheduling
+APScheduler==3.10.4
+
+# Utils
+python-dotenv==1.0.0
+pydantic==2.6.0
