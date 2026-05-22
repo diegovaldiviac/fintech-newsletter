@@ -8,7 +8,8 @@ lxml==5.2.1              # Parser más rápido que html.parser, requerido por bs
 feedparser==6.0.11       # Parseo de RSS/Atom feeds (alternativa limpia a scraping directo)
 
 # LLM
-anthropic==0.25.0
+anthropic>=0.103.0
+openai>=1.30.0
 
 # Email
 resend==0.7.2

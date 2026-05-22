@@ -1,8 +1,8 @@
+from abc import ABC, abstractmethod
 import anthropic
+import openai
 from sources import Article
-from config import ANTHROPIC_API_KEY
-
-client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+from config import ANTHROPIC_API_KEY, OPENAI_API_KEY, LLM_PROVIDER
 
 SYSTEM_PROMPT = """Eres el editor técnico de un newsletter semanal de innovación fintech.
 Tu audiencia son ingenieros de software con experiencia en sistemas financieros.
@@ -45,19 +45,57 @@ Con base en estos artículos, redacta un newsletter semanal con la siguiente est
 El newsletter completo no debe superar 500 palabras. Prioriza densidad de información sobre volumen.
 """
 
+
+class LLMProvider(ABC):
+    @abstractmethod
+    def generate(self, articles: list[Article]) -> str:
+        pass
+
+
+class AnthropicProvider(LLMProvider):
+    def __init__(self):
+        self.client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
+    def generate(self, articles: list[Article]) -> str:
+        print("[LLM] Generando newsletter con Claude (Anthropic)...")
+        message = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=1500,
+            messages=[{"role": "user", "content": build_prompt(articles)}],
+            system=SYSTEM_PROMPT,
+        )
+        print("[LLM] Newsletter generado exitosamente.")
+        return message.content[0].text
+
+
+class OpenAIProvider(LLMProvider):
+    def __init__(self):
+        self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
+
+    def generate(self, articles: list[Article]) -> str:
+        print("[LLM] Generando newsletter con GPT (OpenAI)...")
+        response = self.client.chat.completions.create(
+            model="gpt-4o",
+            max_tokens=1500,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": build_prompt(articles)},
+            ],
+        )
+        print("[LLM] Newsletter generado exitosamente.")
+        return response.choices[0].message.content
+
+
+def get_provider() -> LLMProvider:
+    providers = {
+        "anthropic": AnthropicProvider,
+        "openai": OpenAIProvider,
+    }
+    provider_class = providers.get(LLM_PROVIDER)
+    if not provider_class:
+        raise ValueError(f"LLM_PROVIDER '{LLM_PROVIDER}' no válido. Opciones: {list(providers.keys())}")
+    return provider_class()
+
+
 def generate(articles: list[Article]) -> str:
-    """Calls Claude API and returns the newsletter as a string."""
-    print("[LLM] Generando newsletter con Claude...")
-
-    prompt = build_prompt(articles)
-
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1500,
-        messages=[{"role": "user", "content": prompt}],
-        system=SYSTEM_PROMPT,
-    )
-
-    content = message.content[0].text
-    print("[LLM] Newsletter generado exitosamente.")
-    return content
+    return get_provider().generate(articles)

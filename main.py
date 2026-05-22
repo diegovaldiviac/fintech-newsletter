@@ -9,7 +9,7 @@ Uso:
 import sys
 
 # --- Fuentes API (activas) ---
-from sources.api import newsapi, guardian, reddit
+from sources.api import newsapi, guardian, reddit, massive, mediastack
 
 # --- Fuentes Scraper (pendientes — no corren aún) ---
 # TODO: descomentar cuando el scraper del DF esté listo
@@ -30,7 +30,9 @@ def run(dry_run: bool = False):
     # APIs activas
     articles += newsapi.fetch()
     articles += guardian.fetch()
-    articles += reddit.fetch()
+    #articles += reddit.fetch()
+    #articles += massive.fetch()
+    #articles += mediastack.fetch()
 
     # Scrapers — descomenta cuando estén listos
     # articles += MercadoLibreTechScraper().fetch()

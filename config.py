@@ -11,7 +11,15 @@ REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET")
 REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "fintech-newsletter/1.0")
 
 # LLM
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Massive
+MASSIVE_API_KEY = os.getenv("MASSIVE_API_KEY")
+
+# MediaStack
+MEDIASTACK_API_KEY = os.getenv("MEDIASTACK_API_KEY")
 
 # Email
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
