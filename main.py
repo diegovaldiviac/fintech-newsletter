@@ -11,11 +11,8 @@ import sys
 # --- Fuentes API (activas) ---
 from sources.api import newsapi, guardian, reddit, massive, mediastack
 
-# --- Fuentes Scraper (pendientes — no corren aún) ---
-# TODO: descomentar cuando el scraper del DF esté listo
+# --- Fuentes Scraper ---
 # from sources.scrapers.mercadolibre import MercadoLibreTechScraper
-# from sources.scrapers.diario_financiero import DiarioFinancieroScraper
-# from sources.scrapers.economist import EconomistScraper
 
 from pipeline import filter, llm, email
 
@@ -34,10 +31,7 @@ def run(dry_run: bool = False):
     #articles += massive.fetch()
     #articles += mediastack.fetch()
 
-    # Scrapers — descomenta cuando estén listos
     # articles += MercadoLibreTechScraper().fetch()
-    # articles += DiarioFinancieroScraper().fetch()
-    # articles += EconomistScraper().fetch()
 
     print(f"   Total artículos crudos: {len(articles)}\n")
 
