@@ -6,70 +6,76 @@
   <title>Fintech Signal — Newsletter Semanal</title>
   <style>
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background-color: #0f0f0f;
-      color: #e0e0e0;
+      font-family: Georgia, 'Times New Roman', serif;
+      background-color: #ffffff;
+      color: #111111;
       margin: 0;
       padding: 0;
     }
     .container {
-      max-width: 640px;
+      max-width: 620px;
       margin: 0 auto;
-      padding: 40px 24px;
+      padding: 48px 32px;
     }
     .header {
-      border-bottom: 1px solid #333;
+      border-bottom: 2px solid #111111;
       padding-bottom: 20px;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
     .header h1 {
-      font-size: 20px;
-      color: #00ff88;
-      margin: 0 0 4px 0;
-      letter-spacing: 2px;
+      font-size: 22px;
+      color: #111111;
+      margin: 0 0 6px 0;
+      letter-spacing: 3px;
       text-transform: uppercase;
+      font-weight: bold;
     }
     .header p {
       font-size: 12px;
-      color: #555;
+      color: #888888;
       margin: 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
     .content {
       font-size: 15px;
-      line-height: 1.75;
-      color: #d0d0d0;
+      line-height: 1.8;
+      color: #111111;
       white-space: pre-wrap;
     }
     .content strong, .content b {
-      color: #ffffff;
+      color: #111111;
+      font-weight: bold;
     }
     .content a {
-      color: #00ff88;
+      color: #1a56cc;
       text-decoration: none;
     }
     .content a:hover {
       text-decoration: underline;
     }
     .footer {
-      border-top: 1px solid #222;
-      margin-top: 40px;
+      border-top: 1px solid #dddddd;
+      margin-top: 48px;
       padding-top: 20px;
-      font-size: 12px;
-      color: #444;
+      font-size: 11px;
+      color: #999999;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>⚡ Fintech Signal</h1>
-      <p>Newsletter semanal de innovación fintech para ingenieros — {date}</p>
+      <h1>Fintech Signal</h1>
+      <p>Newsletter semanal — {date}</p>
     </div>
     <div class="content">
 {content}
     </div>
     <div class="footer">
-      <p>Generado automáticamente con Claude + fuentes públicas de innovación fintech.</p>
+      <p>Por Diego Valdivia</p>
+      <p>Si este correo llegó a spam, agrégalo a tus contactos para recibirlo correctamente la próxima semana.</p>
     </div>
   </div>
 </body>

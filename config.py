@@ -23,8 +23,8 @@ MEDIASTACK_API_KEY = os.getenv("MEDIASTACK_API_KEY")
 
 # Email
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+RESEND_AUDIENCE_ID = os.getenv("RESEND_AUDIENCE_ID")
 EMAIL_FROM = os.getenv("EMAIL_FROM")
-EMAIL_TO = os.getenv("EMAIL_TO")
 
 # Pipeline
 MAX_ARTICLES_PER_SOURCE = int(os.getenv("MAX_ARTICLES_PER_SOURCE", 5))
