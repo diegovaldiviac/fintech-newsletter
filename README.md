@@ -1,112 +1,103 @@
-# ⚡ Fintech Signal Newsletter
+# Fintech Signal Newsletter
 
-Pipeline automatizado que recopila señales de innovación fintech desde APIs públicas, las procesa con Claude (LLM) y las envía como newsletter semanal por email.
+Automated pipeline that collects fintech innovation signals from public APIs, processes them with an LLM, and delivers a weekly newsletter by email — with no server required.
+
+---
+
+## Subscribe
+
+Want to receive the newsletter? Head over to **[diegovaldiviacox.com](https://diegovaldiviacox.com)** and sign up.
+
+---
+
+## How it runs — serverless via GitHub Actions
+
+The pipeline runs entirely on GitHub Actions on a weekly cron schedule. No server, no hosting costs.
+
+```yaml
+on:
+  schedule:
+    - cron: '0 12 * * 1'  # Every Monday at 12:00 UTC
+  workflow_dispatch:        # Can also be triggered manually from GitHub
+```
+
+Every Monday, GitHub spins up a runner that:
+1. Fetches articles from all configured sources
+2. Filters and deduplicates by fintech relevance
+3. Generates the newsletter with an LLM
+4. Reads the subscriber list from Resend Audiences
+5. Sends the email to each active subscriber
+
+You can also trigger it manually at any time from the **Actions** tab in GitHub.
 
 ---
 
 ## Stack
 
-| Capa | Tecnología |
+| Layer | Technology |
 |---|---|
-| Lenguaje | Python 3.11+ |
-| Fuentes | NewsAPI, The Guardian API, Reddit (PRAW) |
-| LLM | Claude API (Anthropic) |
+| Language | Python 3.10 |
+| Sources | NewsAPI, The Guardian, MediaStack |
+| LLM | OpenAI GPT-4o (Anthropic Claude as fallback) |
 | Email | Resend |
-| Scheduling | APScheduler |
-| Hosting (futuro) | Railway |
+| Scheduling | GitHub Actions (cron) |
+| Subscribers | Resend Audiences |
 
 ---
 
-## Setup Local
+## Local Setup
 
-### 1. Clonar e instalar dependencias
+### 1. Clone and install
 
 ```bash
-git clone <repo>
+git clone https://github.com/diegovaldiviac/fintech-newsletter
 cd fintech-newsletter
 python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Configurar variables de entorno
+### 2. Configure environment variables
 
 ```bash
 cp .env.example .env
-# Edita .env con tus API keys reales
+# Fill in your API keys
 ```
 
-**APIs que necesitas:**
-- **NewsAPI:** https://newsapi.org (gratis, 100 req/día)
-- **The Guardian:** https://open-platform.theguardian.com (gratis)
-- **Reddit:** https://www.reddit.com/prefs/apps → crear app "script"
-- **Anthropic:** https://console.anthropic.com
-- **Resend:** https://resend.com (3.000 emails/mes gratis)
-
-### 3. Correr manualmente
+### 3. Run locally
 
 ```bash
-# Dry run — genera el newsletter y lo muestra en consola, NO envía email
+# Dry run — generates the newsletter and prints it, does NOT send email
 python main.py --dry-run
 
-# Correr completo — genera Y envía el email
+# Full run — generates and sends
 python main.py
 ```
 
-### 4. Activar scheduler semanal
+---
 
-```bash
-# Corre el proceso en background (envía cada lunes 8:00 AM)
-python scheduler.py
-```
+## Required API Keys
+
+Add these as **GitHub Actions secrets** (Settings → Secrets and variables → Actions) and in your local `.env`.
+
+| Secret | Where to get it |
+|--------|----------------|
+| `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com) |
+| `RESEND_API_KEY` | [resend.com/api-keys](https://resend.com/api-keys) — requires Full Access |
+| `RESEND_AUDIENCE_ID` | [resend.com/audiences](https://resend.com/audiences) |
+| `EMAIL_FROM` | A verified domain in Resend (e.g. `newsletter@yourdomain.com`) |
+| `NEWSAPI_KEY` | [newsapi.org](https://newsapi.org) — free, 100 req/day |
+| `GUARDIAN_API_KEY` | [open-platform.theguardian.com](https://open-platform.theguardian.com) — free |
+| `MEDIASTACK_API_KEY` | [mediastack.com](https://mediastack.com) — free tier available |
+| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) — optional fallback |
 
 ---
 
-## Estructura del Proyecto
+## Switching LLM provider
+
+The pipeline supports OpenAI and Anthropic. Set the provider in your `.env` or GitHub secret:
 
 ```
-fintech-newsletter/
-├── .env                    # API keys (no subir al repo)
-├── .env.example            # Template de variables
-├── requirements.txt
-├── config.py               # Configuración central y keywords
-│
-├── sources/                # Módulos de ingesta por fuente
-│   ├── __init__.py         # Modelo Article (Pydantic)
-│   ├── newsapi.py
-│   ├── guardian.py
-│   └── reddit.py
-│
-├── pipeline/               # Procesamiento
-│   ├── filter.py           # Deduplicación y filtrado por keywords
-│   ├── llm.py              # Generación con Claude API
-│   └── email.py            # Renderizado HTML y envío con Resend
-│
-├── templates/
-│   └── newsletter.html     # Template visual del email
-│
-├── main.py                 # Entry point manual
-└── scheduler.py            # Scheduler semanal automático
+LLM_PROVIDER=openai   # default
+LLM_PROVIDER=anthropic
 ```
-
----
-
-## Plan de Hosting (Railway)
-
-1. Subir repo a GitHub
-2. Crear proyecto en https://railway.app
-3. Conectar repositorio
-4. Agregar variables de entorno en Railway (las mismas del .env)
-5. Cambiar el start command a: `python scheduler.py`
-6. Deploy — Railway mantiene el proceso corriendo 24/7
-
-Costo estimado: ~$5 USD/mes en el plan Hobby de Railway.
-
----
-
-## Próximos pasos (post-MVP)
-
-- [ ] Agregar scraping de Finextra y a16z blog
-- [ ] Soporte para lista de suscriptores (CSV o base de datos simple)
-- [ ] Dashboard web para ver historial de newsletters generados
-- [ ] Feedback loop: tracking de clicks para mejorar selección de artículos
